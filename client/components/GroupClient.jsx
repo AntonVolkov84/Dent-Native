@@ -1,5 +1,5 @@
 import styled from "styled-components/native";
-import { Image, Text, View, TouchableOpacity } from "react-native";
+import { View } from "react-native";
 
 const Group = styled.View`
   padding: 0 40px;

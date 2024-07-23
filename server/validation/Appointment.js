@@ -1,7 +1,7 @@
 import { body } from "express-validator";
 
 const validatotionAppointments = [
-  body("id", "Укажите ID").notEmpty(),
+  body("patient", "Укажите ID").notEmpty(),
   body("dentNumber", "Номер зуба не менее 1 и не более 48").isInt({
     min: 1,
     max: 48,

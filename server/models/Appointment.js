@@ -3,13 +3,12 @@ import { Schema } from "mongoose";
 
 const AppointmentSchema = new mongoose.Schema(
   {
-    id: { type: Schema.Types.ObjectId, ref: "Patient" },
     dentNumber: Number,
     diagnosis: String,
     price: Number,
     date: String,
     time: String,
-    patient: { type: Object, require: false },
+    patient: Object,
   },
   { timestamps: true }
 );

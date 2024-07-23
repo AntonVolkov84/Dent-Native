@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components/native";
-import { FlatList } from "react-native";
+import { FlatList, Text, View, Alert, TouchableHighlight } from "react-native";
 import { GroupClient } from "../components/GroupClient";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { StatusBar } from "expo-status-bar";
