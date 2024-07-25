@@ -12,9 +12,9 @@ const Container = styled.View`
 `;
 
 const PatientFullName = styled.Text`
-  font-weight: 800;
+  font-weight: 400;
   color: white;
-  font-size: 50px;
+  font-size: 30px;
 `;
 
 const GreyText = styled.Text`
@@ -25,21 +25,21 @@ const GreyText = styled.Text`
 const Button = styled.TouchableOpacity`
   border-radius: 30px;
   background-color: #2a86ff;
-  width: 500px;
+  width: 230px;
   height: 80px;
   align-items: center;
   justify-content: center;
 `;
 const ButtonText = styled.Text`
   color: white;
-  font-size: 30px;
+  font-size: 20px;
 `;
 const PatientButton = styled.View`
   display: flex;
   flex-direction: row;
 `;
 const ButtonPhone = styled.TouchableOpacity`
-  margin-left: 50px;
+  margin-left: 20px;
   width: 80px;
   height: 80px;
   border-radius: 50px;
