@@ -85,6 +85,7 @@ export const allAppointment = async (req, res) => {
           },
         },
       },
+      { $sort: { _id: 1 } },
     ]);
     res.json(appointment);
   } catch (error) {

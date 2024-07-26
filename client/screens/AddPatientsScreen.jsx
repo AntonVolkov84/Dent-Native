@@ -98,7 +98,7 @@ export default function AddPatientsScreen({ navigation }) {
           <InputButtonText>Принять пациента</InputButtonText>
         </InputButton>
       </TouchableOpacity>
-      <AddAppointment patients={patients} isLoading={isLoading} />
+      <AddAppointment patients={patients} isLoading={isLoading} navigation={navigation} />
     </Container>
   );
 }

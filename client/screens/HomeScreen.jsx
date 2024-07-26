@@ -190,7 +190,7 @@ export default function HomeScreen({ navigation }) {
       console.log(error);
     }
   };
-
+  console.log(data.sort((a, b) => a._id.data - b._id.data));
   useEffect(() => {
     fetchApi();
   }, []);

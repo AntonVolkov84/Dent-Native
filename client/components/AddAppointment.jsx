@@ -74,11 +74,28 @@ export default function AddAppointment(props) {
   const [time, setTime] = useState("");
   const [patient, setPatient] = useState("");
 
+  const postAppointment = async () => {
+    try {
+      const data = await axios.post("/appointments", {
+        patient: patient._id,
+        dentNumber: dentNumber,
+        diagnosis: diagnosis,
+        price: price,
+        date: date,
+        time: time,
+      });
+      Alert.alert("Все четко", "Успешно добавлен прием");
+      clearHandleAddAppointment();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleAddAppointment = () => {
     if (dentNumber === "" || diagnosis === "" || price === "" || date === "" || time === "" || patient === "") {
       return Alert.alert("Пустое поле", "Заполните все поля, пожалуйста");
     }
-    return console.log(diagnosis, dentNumber, time, date, patient, price), clearHandleAddAppointment();
+    return postAppointment();
   };
   const clearHandleAddAppointment = () => {
     setPatient("");
@@ -89,7 +106,6 @@ export default function AddAppointment(props) {
     setPrice("");
   };
   if (!props.isLoading) {
-    console.log(patient);
     return (
       <>
         <Title>
@@ -97,7 +113,7 @@ export default function AddAppointment(props) {
         </Title>
         <SelectDropdown
           data={props.patients}
-          onSelect={(selectedItem) => setPatient(selectedItem.fullname)}
+          onSelect={(selectedItem) => setPatient(selectedItem)}
           renderButton={(selectedItem, isOpened) => {
             return (
               <View style={styles.dropdownButtonStyle}>
