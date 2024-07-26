@@ -23,7 +23,6 @@ const PlusButton = styled.TouchableOpacity`
   bottom: 80px;
 `;
 
-// const data2 = [
 //   {
 //     title: "11 августа 2023",
 //     items: [

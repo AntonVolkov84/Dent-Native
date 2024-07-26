@@ -53,39 +53,38 @@ const emojisWithIcons = [
   { title: "frown", icon: "emoticon-frown-outline" },
 ];
 export default function AddAppointment() {
-  const [patients, setPatients] = useState(null);
+  const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    getPatients();
-  }, []);
-
-  async function getPatients() {
+  const fetchApi = async () => {
     try {
       const data = await axios.get("/patients");
-      setPatients(data.data);
+      setData(data.data);
       setIsLoading(false);
     } catch (error) {
-      Alert.alert(error.message);
       setIsLoading(false);
-      console.log(error);
+      console.log(error.message);
     }
-  }
-  console.log(patients);
+  };
+
+  useEffect(() => {
+    fetchApi();
+  }, []);
+
   return (
     <>
       <Title>
         <TitleText>Назначения</TitleText>
       </Title>
       <SelectDropdown
-        data={patients}
+        data={data}
+        onSelect={(selectedItem, index) => {
+          console.log(selectedItem, index);
+        }}
         renderButton={(selectedItem, isOpened) => {
           return (
             <View style={styles.dropdownButtonStyle}>
-              {selectedItem && <Icon name={selectedItem.icon} style={styles.dropdownButtonIconStyle} />}
-              <Text style={styles.dropdownButtonTxtStyle}>
-                {(selectedItem && selectedItem.fullname) || "Выберите пациента"}
-              </Text>
+              <Text style={styles.dropdownButtonTxtStyle}>{selectedItem.fullname || "Выберите пациента"}</Text>
               <Icon name={isOpened ? "chevron-up" : "chevron-down"} style={styles.dropdownButtonArrowStyle} />
             </View>
           );
