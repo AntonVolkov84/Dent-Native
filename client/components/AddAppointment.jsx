@@ -52,64 +52,55 @@ const emojisWithIcons = [
   { title: "sick", icon: "emoticon-sick-outline" },
   { title: "frown", icon: "emoticon-frown-outline" },
 ];
-export default function AddAppointment() {
-  const [data, setData] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const fetchApi = async () => {
-    try {
-      const data = await axios.get("/patients");
-      setData(data.data);
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
-      console.log(error.message);
-    }
-  };
-
-  useEffect(() => {
-    fetchApi();
-  }, []);
-
-  return (
-    <>
-      <Title>
-        <TitleText>Назначения</TitleText>
-      </Title>
-      <SelectDropdown
-        data={data}
-        onSelect={(selectedItem, index) => {
-          console.log(selectedItem, index);
-        }}
-        renderButton={(selectedItem, isOpened) => {
-          return (
-            <View style={styles.dropdownButtonStyle}>
-              <Text style={styles.dropdownButtonTxtStyle}>{selectedItem.fullname || "Выберите пациента"}</Text>
-              <Icon name={isOpened ? "chevron-up" : "chevron-down"} style={styles.dropdownButtonArrowStyle} />
-            </View>
-          );
-        }}
-        renderItem={(item, index, isSelected) => {
-          return (
-            <View style={{ ...styles.dropdownItemStyle, ...(isSelected && { backgroundColor: "#D2D9DF" }) }}>
-              <Text style={styles.dropdownItemTxtStyle}>{item.fullname}</Text>
-            </View>
-          );
-        }}
-        showsVerticalScrollIndicator={true}
-      ></SelectDropdown>
-      <InputField placeholder="Номер зуба"></InputField>
-      <InputField placeholder="Диагноз"></InputField>
-      <InputField placeholder="Цена"></InputField>
-      <InputField placeholder="Дата"></InputField>
-      <InputField placeholder="Время"></InputField>
-      <TouchableOpacity>
-        <InputButton>
-          <InputButtonText>Выставить назначения</InputButtonText>
-        </InputButton>
-      </TouchableOpacity>
-    </>
-  );
+export default function AddAppointment(props) {
+  console.log(props.patients, props.isLoading);
+  if (!props.isLoading) {
+    return (
+      <>
+        <Title>
+          <TitleText>Назначения</TitleText>
+        </Title>
+        <SelectDropdown
+          data={props.patients}
+          renderButton={(selectedItem, isOpened) => {
+            return (
+              <View style={styles.dropdownButtonStyle}>
+                {selectedItem && <Icon name={selectedItem.icon} style={styles.dropdownButtonIconStyle} />}
+                <Text style={styles.dropdownButtonTxtStyle}>
+                  {(selectedItem && selectedItem.fullname) || "Выберите пациента"}
+                </Text>
+                <Icon name={isOpened ? "chevron-up" : "chevron-down"} style={styles.dropdownButtonArrowStyle} />
+              </View>
+            );
+          }}
+          renderItem={(item, index, isSelected) => {
+            return (
+              <View style={{ ...styles.dropdownItemStyle, ...(isSelected && { backgroundColor: "#D2D9DF" }) }}>
+                <Text style={styles.dropdownItemTxtStyle}>{item.fullname}</Text>
+              </View>
+            );
+          }}
+          showsVerticalScrollIndicator={true}
+        ></SelectDropdown>
+        <InputField placeholder="Номер зуба"></InputField>
+        <InputField placeholder="Диагноз"></InputField>
+        <InputField placeholder="Цена"></InputField>
+        <InputField placeholder="Дата"></InputField>
+        <InputField placeholder="Время"></InputField>
+        <TouchableOpacity>
+          <InputButton>
+            <InputButtonText>Выставить назначения</InputButtonText>
+          </InputButton>
+        </TouchableOpacity>
+      </>
+    );
+  } else {
+    return (
+      <View>
+        <Text>Wait!</Text>
+      </View>
+    );
+  }
 }
 const styles = StyleSheet.create({
   dropdownButtonStyle: {

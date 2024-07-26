@@ -1,12 +1,5 @@
-import React, { useState } from "react";
-import {
-  Alert,
-  Button,
-  TextInput,
-  View,
-  Text,
-  TouchableOpacity,
-} from "react-native";
+import React, { useState, useEffect } from "react";
+import { Alert, Button, TextInput, View, Text, TouchableOpacity } from "react-native";
 import styled from "styled-components";
 import axios from "../axios";
 import AddAppointment from "../components/AddAppointment";
@@ -50,6 +43,24 @@ const InputButtonText = styled.Text`
 export default function AddPatientsScreen({ navigation }) {
   const [name, setName] = useState("");
   const [number, onChangeNumber] = useState("");
+  const [patients, setPatients] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    getPatients();
+  }, []);
+
+  async function getPatients() {
+    try {
+      const data = await axios.get("/patients");
+      setPatients(data.data);
+      setIsLoading(false);
+    } catch (error) {
+      Alert.alert(error.message);
+      setIsLoading(false);
+      console.log(error);
+    }
+  }
 
   const clear = () => {
     setName("");
@@ -71,14 +82,11 @@ export default function AddPatientsScreen({ navigation }) {
     }
 
     clear();
+    getPatients();
   };
   return (
     <Container>
-      <InputName
-        onChangeText={setName}
-        value={name}
-        placeholder="Имя и фамилия"
-      ></InputName>
+      <InputName onChangeText={setName} value={name} placeholder="Имя и фамилия"></InputName>
       <InputPhone
         keyboardType="numeric"
         onChangeText={onChangeNumber}
@@ -90,7 +98,7 @@ export default function AddPatientsScreen({ navigation }) {
           <InputButtonText>Принять пациента</InputButtonText>
         </InputButton>
       </TouchableOpacity>
-      <AddAppointment />
+      <AddAppointment patients={patients} isLoading={isLoading} />
     </Container>
   );
 }
