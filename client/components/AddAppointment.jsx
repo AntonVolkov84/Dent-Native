@@ -1,7 +1,7 @@
 import { StyleSheet, Alert, Button, TextInput, View, Text, TouchableOpacity } from "react-native";
 import styled from "styled-components";
 import axios from "../axios";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import SelectDropdown from "react-native-select-dropdown";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -36,6 +36,20 @@ const InputButton = styled.View`
 const InputButtonText = styled.Text`
   color: white;
 `;
+const Load = styled.View`
+  width: 100%;
+  height: 400px;
+  background-color: blueviolet;
+  padding: 10px;
+  border-radius: 12px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+`;
+const LoadText = styled.Text`
+  color: white;
+  font-size: 25px;
+`;
 const emojisWithIcons = [
   { title: "happy", icon: "emoticon-happy-outline" },
   { title: "cool", icon: "emoticon-cool-outline" },
@@ -53,8 +67,29 @@ const emojisWithIcons = [
   { title: "frown", icon: "emoticon-frown-outline" },
 ];
 export default function AddAppointment(props) {
-  console.log(props.patients, props.isLoading);
+  const [dentNumber, setDentNumber] = useState("");
+  const [diagnosis, setDiagnosis] = useState("");
+  const [price, setPrice] = useState("");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [patient, setPatient] = useState("");
+
+  const handleAddAppointment = () => {
+    if (dentNumber === "" || diagnosis === "" || price === "" || date === "" || time === "" || patient === "") {
+      return Alert.alert("Пустое поле", "Заполните все поля, пожалуйста");
+    }
+    return console.log(diagnosis, dentNumber, time, date, patient, price), clearHandleAddAppointment();
+  };
+  const clearHandleAddAppointment = () => {
+    setPatient("");
+    setTime("");
+    setDate("");
+    setDentNumber("");
+    setDiagnosis("");
+    setPrice("");
+  };
   if (!props.isLoading) {
+    console.log(patient);
     return (
       <>
         <Title>
@@ -62,6 +97,7 @@ export default function AddAppointment(props) {
         </Title>
         <SelectDropdown
           data={props.patients}
+          onSelect={(selectedItem) => setPatient(selectedItem.fullname)}
           renderButton={(selectedItem, isOpened) => {
             return (
               <View style={styles.dropdownButtonStyle}>
@@ -82,23 +118,28 @@ export default function AddAppointment(props) {
           }}
           showsVerticalScrollIndicator={true}
         ></SelectDropdown>
-        <InputField placeholder="Номер зуба"></InputField>
-        <InputField placeholder="Диагноз"></InputField>
-        <InputField placeholder="Цена"></InputField>
-        <InputField placeholder="Дата"></InputField>
-        <InputField placeholder="Время"></InputField>
+        <InputField
+          keyboardType="numeric"
+          placeholder="Номер зуба"
+          onChangeText={setDentNumber}
+          value={dentNumber}
+        ></InputField>
+        <InputField placeholder="Диагноз" onChangeText={setDiagnosis} value={diagnosis}></InputField>
+        <InputField placeholder="Цена" keyboardType="numeric" onChangeText={setPrice} value={price}></InputField>
+        <InputField placeholder="Дата" keyboardType="numeric" onChangeText={setDate} value={date}></InputField>
+        <InputField placeholder="Время" keyboardType="numeric" onChangeText={setTime} value={time}></InputField>
         <TouchableOpacity>
           <InputButton>
-            <InputButtonText>Выставить назначения</InputButtonText>
+            <InputButtonText onPress={handleAddAppointment}>Выставить назначения</InputButtonText>
           </InputButton>
         </TouchableOpacity>
       </>
     );
   } else {
     return (
-      <View>
-        <Text>Wait!</Text>
-      </View>
+      <Load>
+        <LoadText>Wait!</LoadText>
+      </Load>
     );
   }
 }
