@@ -64,26 +64,26 @@ const GroupIconPriceText = styled.Text`
   font-size: 20px;
 `;
 
-export default function PatientProgramm({ title, items }) {
+export default function PatientProgramm({ item }) {
   return (
     <Group>
-      <GroupTitle>Что делать</GroupTitle>
+      <GroupTitle>{item.diagnosis}</GroupTitle>
       <GroupWork>
         <GroupIcon>
           <FontAwesome5 name="teeth-open" size={30} color="black" />
-          <GroupIconText>Зуб: 112</GroupIconText>
+          <GroupIconText>{item.dentNumber}</GroupIconText>
         </GroupIcon>
         <GroupIcon>
           <FontAwesome5 name="diagnoses" size={30} color="black" />
-          <GroupIconText>Диагноз: Победитель</GroupIconText>
+          <GroupIconText>{item.diagnosis}</GroupIconText>
         </GroupIcon>
         <GroupIcon>
           <GroupIconButton>
             <GroupIconTime>
-              <GroupIconTimeText>12.04.2024-14:00</GroupIconTimeText>
+              <GroupIconTimeText>{item.date + " " + item.time}</GroupIconTimeText>
             </GroupIconTime>
             <GroupIconPrice>
-              <GroupIconPriceText>1500p</GroupIconPriceText>
+              <GroupIconPriceText>{item.price}</GroupIconPriceText>
             </GroupIconPrice>
           </GroupIconButton>
         </GroupIcon>

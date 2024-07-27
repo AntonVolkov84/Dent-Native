@@ -1,8 +1,9 @@
-import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, TouchableOpacity, FlatList } from "react-native";
 import styled from "styled-components";
 import Entypo from "@expo/vector-icons/Entypo";
 import PatientProgramm from "../components/PatientProgramm";
+import axios from "../axios";
 
 const Container = styled.View`
   width: 100%;
@@ -58,22 +59,63 @@ const Test = styled.View`
   border-radius: 18px;
   margin-top: 20px;
 `;
+const Load = styled.View`
+  width: 100%;
+  height: 400px;
+  background-color: blueviolet;
+  padding: 10px;
+  border-radius: 12px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+`;
+const LoadText = styled.Text`
+  color: white;
+  font-size: 25px;
+`;
 
-export default function PatientCardScreen(props) {
+export default function PatientCardScreen({ route }) {
+  const { item } = route.params;
+  const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const getAppointmentBy = async () => {
+    try {
+      const data = await axios.get(`/appointments/${item.phone}`);
+      setData(data.data);
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getAppointmentBy();
+  }, []);
   return (
     <Container>
-      <PatientFullName>Volkov Anton</PatientFullName>
-      <GreyText>+380958661514</GreyText>
+      <PatientFullName>{item.fullname}</PatientFullName>
+      <GreyText>{item.phone}</GreyText>
       <PatientButton>
         <Button>
-          <ButtonText>Нажми меня</ButtonText>
+          <ButtonText>Позвонить</ButtonText>
         </Button>
         <ButtonPhone>
           <Entypo name="phone" size={35} color="white" />
         </ButtonPhone>
       </PatientButton>
-      <PatientProgramm />
-      <PatientProgramm />
+      {isLoading ? (
+        <Load>
+          <LoadText>Подождите</LoadText>
+        </Load>
+      ) : (
+        <FlatList
+          data={data}
+          key={(item) => item.index}
+          renderItem={({ item }) => <PatientProgramm item={item} />}
+        ></FlatList>
+      )}
     </Container>
   );
 }

@@ -81,6 +81,8 @@ export const allAppointment = async (req, res) => {
               diagnosis: "$diagnosis",
               price: "$price",
               dentNumber: "$dentNumber",
+              date: "$date",
+              id: "$_id",
             },
           },
         },
@@ -95,11 +97,23 @@ export const allAppointment = async (req, res) => {
     });
   }
 };
+export const allPatientAppointment = async (req, res) => {
+  try {
+    const patientId = req.params.id;
+    const appointment = await Appointment.aggregate([{ $match: { "patient.phone": patientId } }]);
+    res.json(appointment);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Не удалось вывести Appointment",
+    });
+  }
+};
 
 export const delAppointment = async (req, res) => {
   try {
-    const appointment = await AppointmentModel.findOne({
-      _id: req.body.id,
+    const appointment = await AppointmentModel.findOneAndDelete({
+      _id: req.params.id,
     });
     if (!appointment) {
       return res.status(402).json({ message: "Appointment не найден" });
@@ -108,7 +122,7 @@ export const delAppointment = async (req, res) => {
       _id: req.body.id,
     });
     res.json({
-      message: `Процедура ${appointment.diagnosis} пациента ${appointment.patient.fullname} записанная на ${appointment.date} на ${appointment.time} удалена`,
+      message: `Прием пациента ${appointment.patient.fullname} записанного на ${appointment.date} на ${appointment.time} удален`,
     });
   } catch (error) {
     console.log(error);

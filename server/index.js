@@ -21,17 +21,10 @@ app.patch("/patients", validatotionPatient, PatientController.patchPatient);
 app.delete("/patients", PatientController.delPatient);
 app.post("/patients", validatotionPatient, PatientController.addPatient);
 app.get("/appointments", AppointmentController.allAppointment);
-app.delete("/appointments", AppointmentController.delAppointment);
-app.patch(
-  "/appointments",
-  validatotionAppointments,
-  AppointmentController.patchAppointment
-);
-app.post(
-  "/appointments",
-  validatotionAppointments,
-  AppointmentController.addAppointment
-);
+app.delete("/appointments/:id", AppointmentController.delAppointment);
+app.get("/appointments/:id", AppointmentController.allPatientAppointment);
+app.patch("/appointments", validatotionAppointments, AppointmentController.patchAppointment);
+app.post("/appointments", validatotionAppointments, AppointmentController.addAppointment);
 
 app.listen(6666, function (err) {
   if (err) {

@@ -1,6 +1,9 @@
 import styled from "styled-components/native";
-import { View, Text } from "react-native";
+import { View, Text, Alert } from "react-native";
 import getAvatarColor from "../utils/getAvatarColor";
+import { SwipeListView } from "react-native-swipe-list-view";
+import axios from "../axios";
+import { Ionicons } from "@expo/vector-icons";
 
 const Group = styled.View`
   padding: 0 40px;
@@ -19,6 +22,7 @@ const GroupItem = styled.TouchableOpacity`
   position: relative;
   border-bottom-width: 1px;
   border-bottom-color: #f3f3f3;
+  background-color: #1f1838;
 `;
 const AvatarNew = styled.View`
   width: 40px;
@@ -57,36 +61,115 @@ const GroupDate = styled.Text`
   position: absolute;
   right: 0px;
 `;
-export const GroupClient = ({ title, items, navigation }) => {
+const Hiden = styled.View`
+  display: flex;
+  flex-direction: row;
+  position: absolute;
+  right: 0px;
+  gap: 10px;
+`;
+const HidenDel = styled.TouchableOpacity`
+  background-color: red;
+  width: 50px;
+  height: 50px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  border-radius: 8px;
+`;
+const HidenDelText = styled.Text`
+  color: white;
+  font-size: 12px;
+`;
+const HidenUpdate = styled.TouchableOpacity`
+  background-color: green;
+  margin-top: 20px;
+  width: 50px;
+  height: 50px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+`;
+const HidenUpdateText = styled.Text`
+  color: white;
+  font-size: 12px;
+`;
+export const GroupClient = ({ title, items, navigation, fetchApi }) => {
+  const delAppointment = async (id) => {
+    try {
+      const data = await axios.delete(`/appointments/${id}`);
+      if (data) {
+        Alert.alert("Ghbdtn", data.data.message, [{ text: "Ask me latter" }, { text: "eefefef" }]);
+      }
+      fetchApi();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const patcAppointment = async (item) => {
+    try {
+      const data = await axios.patch(`/appointments`, {});
+      if (data) {
+        Alert.alert("Внимание", data.data.message, [{ text: "Ясно, понятно" }]);
+      }
+      fetchApi();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <Group>
       <GroupTitle>{title}</GroupTitle>
-      {items.map((item) => (
-        <GroupItem
-          key={item.index}
-          onPress={() => navigation.navigate("PatientCardScreen")}
-        >
-          <AvatarNew
-            style={{
-              backgroundColor: getAvatarColor(item.fullname[0].toUpperCase())
-                .background,
-            }}
-          >
-            <AvatarNewText
-              style={{
-                color: getAvatarColor(item.fullname[0].toUpperCase()).color,
+      <SwipeListView
+        data={items}
+        renderItem={(data, rowMap) => (
+          <>
+            <GroupItem
+              key={data.item.index}
+              onPress={() => navigation.navigate("PatientCardScreen", { item: data.item })}
+            >
+              <AvatarNew
+                style={{
+                  backgroundColor: getAvatarColor(data.item.fullname[0].toUpperCase()).background,
+                }}
+              >
+                <AvatarNewText
+                  style={{
+                    color: getAvatarColor(data.item.fullname[0].toUpperCase()).color,
+                  }}
+                >
+                  {data.item.fullname[0].toUpperCase()}
+                </AvatarNewText>
+              </AvatarNew>
+              <View>
+                <FullName>{data.item.fullname}</FullName>
+                <GreyText>{data.item.diagnosis}</GreyText>
+              </View>
+              <GroupDate active={title}>{data.item.time}</GroupDate>
+            </GroupItem>
+          </>
+        )}
+        renderHiddenItem={(data, rowMap) => (
+          <Hiden>
+            <HidenUpdate
+              onPress={() => {
+                patcAppointment(data.item);
               }}
             >
-              {item.fullname[0].toUpperCase()}
-            </AvatarNewText>
-          </AvatarNew>
-          <View>
-            <FullName>{item.fullname}</FullName>
-            <GreyText>{item.diagnosis}</GreyText>
-          </View>
-          <GroupDate active={title}>{item.time}</GroupDate>
-        </GroupItem>
-      ))}
+              <HidenUpdateText>Замена</HidenUpdateText>
+            </HidenUpdate>
+            <HidenDel
+              onPress={() => {
+                delAppointment(data.item.id);
+              }}
+            >
+              <Ionicons color="white" size="20" name="trash"></Ionicons>
+            </HidenDel>
+          </Hiden>
+        )}
+        rightOpenValue={-120}
+      ></SwipeListView>
     </Group>
   );
 };
