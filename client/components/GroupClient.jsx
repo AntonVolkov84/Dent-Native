@@ -164,7 +164,7 @@ export const GroupClient = ({ title, items, navigation, fetchApi }) => {
                 delAppointment(data.item.id);
               }}
             >
-              <Ionicons color="white" size="20" name="trash"></Ionicons>
+              <Ionicons color="white" size={25} name="trash"></Ionicons>
             </HidenDel>
           </Hiden>
         )}
