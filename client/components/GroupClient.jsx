@@ -157,7 +157,7 @@ export const GroupClient = ({ title, items, navigation, fetchApi }) => {
                 patcAppointment(data.item);
               }}
             >
-              <HidenUpdateText>Замена</HidenUpdateText>
+              <Ionicons color="white" size={25} name="create"></Ionicons>
             </HidenUpdate>
             <HidenDel
               onPress={() => {
