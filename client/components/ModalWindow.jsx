@@ -1,14 +1,22 @@
 import { StyleSheet, Alert, Button, TextInput, View, Text, TouchableOpacity } from "react-native";
 import styled from "styled-components";
 import axios from "../axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SelectDropdown from "react-native-select-dropdown";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+
+const Container = styled.View`
+  width: 100%;
+  height: 100%;
+  background-color: #1f1838;
+  padding: 0 40px;
+`;
 
 const Title = styled.View`
   margin-top: 30px;
   justify-content: center;
   align-items: center;
+  margin-bottom: 20px;
 `;
 const TitleText = styled.Text`
   color: white;
@@ -23,10 +31,20 @@ const InputField = styled.TextInput`
   border-radius: 12px;
   margin-top: 10px;
 `;
-const InputButton = styled.View`
-  width: 100%;
+const InputButtonBack = styled.View`
+  width: 150px;
   height: 50px;
-  background-color: blueviolet;
+  background-color: red;
+  padding: 10px;
+  border-radius: 12px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+`;
+const InputButtonAdd = styled.View`
+  width: 150px;
+  height: 50px;
+  background-color: green;
   padding: 10px;
   border-radius: 12px;
   justify-content: center;
@@ -50,42 +68,56 @@ const LoadText = styled.Text`
   color: white;
   font-size: 25px;
 `;
-const emojisWithIcons = [
-  { title: "happy", icon: "emoticon-happy-outline" },
-  { title: "cool", icon: "emoticon-cool-outline" },
-  { title: "lol", icon: "emoticon-lol-outline" },
-  { title: "sad", icon: "emoticon-sad-outline" },
-  { title: "cry", icon: "emoticon-cry-outline" },
-  { title: "angry", icon: "emoticon-angry-outline" },
-  { title: "confused", icon: "emoticon-confused-outline" },
-  { title: "excited", icon: "emoticon-excited-outline" },
-  { title: "kiss", icon: "emoticon-kiss-outline" },
-  { title: "devil", icon: "emoticon-devil-outline" },
-  { title: "dead", icon: "emoticon-dead-outline" },
-  { title: "wink", icon: "emoticon-wink-outline" },
-  { title: "sick", icon: "emoticon-sick-outline" },
-  { title: "frown", icon: "emoticon-frown-outline" },
-];
-export default function AddAppointment(props) {
+const InputAllButon = styled.View`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+export default function ModalWindow(props) {
   const [dentNumber, setDentNumber] = useState("");
   const [diagnosis, setDiagnosis] = useState("");
   const [price, setPrice] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [patient, setPatient] = useState("");
+  const [id, setId] = useState("");
+  const [patients, setPatients] = useState([]);
 
-  const postAppointment = async () => {
+  useEffect(() => {
+    getPatients();
+    setDentNumber(props.items.dentNumber.toString());
+    setPrice(props.items.price.toString());
+    setPatient(props.items.fullname);
+    setId(props.items.id);
+    setTime(props.items.time);
+    setDate(props.items.date);
+    setDiagnosis(props.items.diagnosis);
+  }, []);
+
+  const getPatients = async () => {
     try {
-      const data = await axios.post("/appointments", {
-        patient: patient._id,
+      const data = await axios.get("/patients");
+      setPatients(data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const patchAppointment = async () => {
+    try {
+      const data = await axios.patch("/appointments", {
+        patient: patient,
         dentNumber: dentNumber,
         diagnosis: diagnosis,
         price: price,
         date: date,
         time: time,
+        id: id,
       });
-      Alert.alert("Все четко", "Успешно добавлен прием");
+      Alert.alert("Ну ладно, исправлю", data.data.message, [{ text: "Ok" }]);
+      props.setVisibilityForModal(false);
       clearHandleAddAppointment();
+      props.fetchApi();
     } catch (error) {
       console.log(error);
     }
@@ -95,7 +127,7 @@ export default function AddAppointment(props) {
     if (dentNumber === "" || diagnosis === "" || price === "" || date === "" || time === "" || patient === "") {
       return Alert.alert("Пустое поле", "Заполните все поля, пожалуйста");
     }
-    return postAppointment();
+    return patchAppointment();
   };
   const clearHandleAddAppointment = () => {
     setPatient("");
@@ -105,22 +137,21 @@ export default function AddAppointment(props) {
     setDiagnosis("");
     setPrice("");
   };
+
   if (!props.isLoading) {
     return (
-      <>
+      <Container>
         <Title>
           <TitleText>Назначения</TitleText>
         </Title>
         <SelectDropdown
-          data={props.patients}
+          data={patients}
           onSelect={(selectedItem) => setPatient(selectedItem)}
           renderButton={(selectedItem, isOpened) => {
             return (
               <View style={styles.dropdownButtonStyle}>
                 {selectedItem && <Icon name={selectedItem.icon} style={styles.dropdownButtonIconStyle} />}
-                <Text style={styles.dropdownButtonTxtStyle}>
-                  {(selectedItem && selectedItem.fullname) || "Выберите пациента"}
-                </Text>
+                <Text style={styles.dropdownButtonTxtStyle}>{(selectedItem && selectedItem.fullname) || patient}</Text>
                 <Icon name={isOpened ? "chevron-up" : "chevron-down"} style={styles.dropdownButtonArrowStyle} />
               </View>
             );
@@ -154,12 +185,19 @@ export default function AddAppointment(props) {
           onChangeText={setTime}
           value={time}
         ></InputField>
-        <TouchableOpacity>
-          <InputButton>
-            <InputButtonText onPress={handleAddAppointment}>Выставить назначения</InputButtonText>
-          </InputButton>
-        </TouchableOpacity>
-      </>
+        <InputAllButon>
+          <TouchableOpacity>
+            <InputButtonBack>
+              <InputButtonText onPress={() => props.setVisibilityForModal(false)}>Отмена</InputButtonText>
+            </InputButtonBack>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <InputButtonAdd>
+              <InputButtonText onPress={handleAddAppointment}>Принять</InputButtonText>
+            </InputButtonAdd>
+          </TouchableOpacity>
+        </InputAllButon>
+      </Container>
     );
   } else {
     return (

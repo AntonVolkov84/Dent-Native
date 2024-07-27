@@ -1,9 +1,11 @@
 import styled from "styled-components/native";
-import { View, Text, Alert } from "react-native";
+import { View, Text, Alert, Modal } from "react-native";
 import getAvatarColor from "../utils/getAvatarColor";
 import { SwipeListView } from "react-native-swipe-list-view";
 import axios from "../axios";
 import { Ionicons } from "@expo/vector-icons";
+import ModalWindow from "./ModalWindow";
+import { useState } from "react";
 
 const Group = styled.View`
   padding: 0 40px;
@@ -95,22 +97,13 @@ const HidenUpdateText = styled.Text`
   font-size: 12px;
 `;
 export const GroupClient = ({ title, items, navigation, fetchApi }) => {
+  const [visibilityForModal, setVisibilityForModal] = useState(false);
+  const [itemsForModal, setItemsForModal] = useState({});
   const delAppointment = async (id) => {
     try {
       const data = await axios.delete(`/appointments/${id}`);
       if (data) {
         Alert.alert("Ghbdtn", data.data.message, [{ text: "Ask me latter" }, { text: "eefefef" }]);
-      }
-      fetchApi();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const patcAppointment = async (item) => {
-    try {
-      const data = await axios.patch(`/appointments`, {});
-      if (data) {
-        Alert.alert("Внимание", data.data.message, [{ text: "Ясно, понятно" }]);
       }
       fetchApi();
     } catch (error) {
@@ -154,7 +147,8 @@ export const GroupClient = ({ title, items, navigation, fetchApi }) => {
           <Hiden>
             <HidenUpdate
               onPress={() => {
-                patcAppointment(data.item);
+                setItemsForModal(data.item);
+                setVisibilityForModal(true);
               }}
             >
               <Ionicons color="white" size={25} name="create"></Ionicons>
@@ -170,6 +164,13 @@ export const GroupClient = ({ title, items, navigation, fetchApi }) => {
         )}
         rightOpenValue={-120}
       ></SwipeListView>
+      <Modal visible={visibilityForModal}>
+        <ModalWindow
+          fetchApi={fetchApi}
+          setVisibilityForModal={setVisibilityForModal}
+          items={itemsForModal}
+        ></ModalWindow>
+      </Modal>
     </Group>
   );
 };
