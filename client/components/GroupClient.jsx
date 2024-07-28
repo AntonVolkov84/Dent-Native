@@ -110,7 +110,7 @@ export const GroupClient = ({ title, items, navigation, fetchApi }) => {
 
   return (
     <Group>
-      <GroupTitle>{title}</GroupTitle>
+      <GroupTitle>{new Date(title).toLocaleDateString("ru-RU", { month: "long", day: "numeric" })}</GroupTitle>
       <SwipeListView
         data={items}
         renderItem={(data, rowMap) => (

@@ -105,6 +105,7 @@ function PatchAppointmentScreen({ route, navigation }) {
   const [patients, setPatients] = useState([]);
   const [showPickerDate, setShowPickerDate] = useState(false);
   const [showPickerTime, setShowPickerTime] = useState(false);
+  const [dateForInput, setDateForInput] = useState("");
 
   useEffect(() => {
     getPatients();
@@ -115,6 +116,7 @@ function PatchAppointmentScreen({ route, navigation }) {
     setTime(item.time);
     setDate(item.date);
     setDiagnosis(item.diagnosis);
+    setDateForInput(new Date(item.date).toLocaleDateString("en-GB"));
   }, []);
   const getPatients = async () => {
     try {
@@ -138,6 +140,7 @@ function PatchAppointmentScreen({ route, navigation }) {
       Alert.alert("Ну ладно, исправлю", data.data.message, [{ text: "Ok" }]);
       props.setVisibilityForModal(false);
       clearHandleAddAppointment();
+      navigation.goBack();
       props.fetchApi();
     } catch (error) {
       console.log(error);
@@ -159,8 +162,8 @@ function PatchAppointmentScreen({ route, navigation }) {
   };
   const handleChangeDate = (event, selectedDate) => {
     setShowPickerDate(false);
-    setDate(new Date(event.nativeEvent.timestamp).toLocaleDateString());
-    navigation.goBack();
+    setDate(new Date(event.nativeEvent.timestamp));
+    setDateForInput(new Date(event.nativeEvent.timestamp).toLocaleDateString("en-GB"));
   };
   const handleChangeTime = (event, selectedDate) => {
     setShowPickerTime(false);
@@ -171,7 +174,6 @@ function PatchAppointmentScreen({ route, navigation }) {
         minute: "2-digit",
       })
     );
-    navigation.goBack();
   };
   return (
     <Container>
@@ -212,7 +214,7 @@ function PatchAppointmentScreen({ route, navigation }) {
           placeholder="Дата"
           keyboardType="numeric"
           onChangeText={setDate}
-          value={date}
+          value={dateForInput}
         ></InputFieldDateText>
         <InputFieldDateButton onPress={() => setShowPickerDate(true)}>
           <Text style={{ color: "white" }}>Выбрать дату</Text>

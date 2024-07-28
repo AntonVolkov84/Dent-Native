@@ -79,6 +79,7 @@ export default function AddAppointment(props) {
   const [patient, setPatient] = useState("");
   const [showPicker, setShowPicker] = useState(false);
   const [showPickerTime, setShowPickerTime] = useState(false);
+  const [dateForInput, setDateForInput] = useState("");
 
   const postAppointment = async () => {
     try {
@@ -113,7 +114,8 @@ export default function AddAppointment(props) {
   };
   const handleChangeDate = (event) => {
     setShowPicker(false);
-    setDate(new Date(event.nativeEvent.timestamp).toLocaleDateString());
+    setDate(new Date(event.nativeEvent.timestamp));
+    setDateForInput(new Date(event.nativeEvent.timestamp).toLocaleDateString("en-GB"));
   };
   const handleChangeTime = (event) => {
     setShowPickerTime(false);
@@ -167,7 +169,7 @@ export default function AddAppointment(props) {
             placeholder="Дата"
             keyboardType="numeric"
             onChangeText={setDate}
-            value={date}
+            value={dateForInput}
           ></InputFieldDateText>
           <InputFieldDateButton onPress={() => setShowPicker(true)}>
             <Text style={{ color: "white" }}>Выбрать дату</Text>
@@ -189,9 +191,9 @@ export default function AddAppointment(props) {
             <InputButtonText onPress={handleAddAppointment}>Выставить назначения</InputButtonText>
           </InputButton>
         </TouchableOpacity>
-        {showPicker && <DateTimePicker mode={"date"} value={date || new Date()} onChange={handleChangeDate} />}
+        {showPicker && <DateTimePicker mode={"date"} value={new Date()} onChange={handleChangeDate} />}
         {showPickerTime && (
-          <DateTimePicker mode={"time"} value={date || new Date()} is24Hour={true} onChange={handleChangeTime} />
+          <DateTimePicker mode={"time"} value={new Date()} is24Hour={true} onChange={handleChangeTime} />
         )}
       </>
     );
