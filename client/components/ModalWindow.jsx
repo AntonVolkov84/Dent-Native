@@ -1,4 +1,4 @@
-import { StyleSheet, Alert, Button, TextInput, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, SafeAreaView, Alert, Button, TextInput, View, Modal, Text, TouchableOpacity } from "react-native";
 import styled from "styled-components";
 import axios from "../axios";
 import { useState, useEffect } from "react";
@@ -78,11 +78,12 @@ export default function ModalWindow(props) {
   const [dentNumber, setDentNumber] = useState("");
   const [diagnosis, setDiagnosis] = useState("");
   const [price, setPrice] = useState("");
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(new Date());
   const [time, setTime] = useState("");
   const [patient, setPatient] = useState("");
   const [id, setId] = useState("");
   const [patients, setPatients] = useState([]);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     getPatients();
@@ -173,7 +174,9 @@ export default function ModalWindow(props) {
         ></InputField>
         <InputField placeholder="Диагноз" onChangeText={setDiagnosis} value={diagnosis}></InputField>
         <InputField placeholder="Цена" keyboardType="numeric" onChangeText={setPrice} value={price}></InputField>
+
         <InputField
+          onPress={() => setOpen(true)}
           placeholder="Дата. В формате день-месяц-год"
           keyboardType="numeric"
           onChangeText={setDate}

@@ -100,7 +100,10 @@ export const allAppointment = async (req, res) => {
 export const allPatientAppointment = async (req, res) => {
   try {
     const patientId = req.params.id;
-    const appointment = await Appointment.aggregate([{ $match: { "patient.phone": patientId } }]);
+    const appointment = await Appointment.aggregate([
+      { $sort: { time: 1 } },
+      { $match: { "patient.phone": patientId } },
+    ]);
     res.json(appointment);
   } catch (error) {
     console.log(error);

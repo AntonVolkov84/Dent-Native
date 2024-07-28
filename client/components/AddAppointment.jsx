@@ -4,6 +4,7 @@ import axios from "../axios";
 import { useState } from "react";
 import SelectDropdown from "react-native-select-dropdown";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 const Title = styled.View`
   margin-top: 30px;
@@ -22,6 +23,24 @@ const InputField = styled.TextInput`
   padding: 10px;
   border-radius: 12px;
   margin-top: 10px;
+`;
+const InputFieldDateText = styled.TextInput`
+  width: 48%;
+  height: 50px;
+  background-color: white;
+  padding: 10px;
+  border-radius: 12px;
+  margin-top: 10px;
+`;
+const InputFieldDateButton = styled.TouchableOpacity`
+  width: 48%;
+  height: 50px;
+  background-color: green;
+  padding: 10px;
+  border-radius: 12px;
+  margin-top: 10px;
+  justify-content: center;
+  align-items: center;
 `;
 const InputButton = styled.View`
   width: 100%;
@@ -73,6 +92,8 @@ export default function AddAppointment(props) {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [patient, setPatient] = useState("");
+  const [showPicker, setShowPicker] = useState(false);
+  const [showPickerTime, setShowPickerTime] = useState(false);
 
   const postAppointment = async () => {
     try {
@@ -104,6 +125,20 @@ export default function AddAppointment(props) {
     setDentNumber("");
     setDiagnosis("");
     setPrice("");
+  };
+  const handleChangeDate = (event) => {
+    setShowPicker(false);
+    setDate(new Date(event.nativeEvent.timestamp).toLocaleDateString());
+  };
+  const handleChangeTime = (event) => {
+    setShowPickerTime(false);
+    setTime(
+      new Date(event.nativeEvent.timestamp).toLocaleTimeString("en-US", {
+        hour12: false,
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    );
   };
   if (!props.isLoading) {
     return (
@@ -142,23 +177,37 @@ export default function AddAppointment(props) {
         ></InputField>
         <InputField placeholder="Диагноз" onChangeText={setDiagnosis} value={diagnosis}></InputField>
         <InputField placeholder="Цена" keyboardType="numeric" onChangeText={setPrice} value={price}></InputField>
-        <InputField
-          placeholder="Дата. В формате день-месяц-год"
-          keyboardType="numeric"
-          onChangeText={setDate}
-          value={date}
-        ></InputField>
-        <InputField
-          placeholder="Время. В формате часы-минуты"
-          keyboardType="numeric"
-          onChangeText={setTime}
-          value={time}
-        ></InputField>
+        <View style={{ flexDirection: "row", gap: 10, justifyContent: "center", alignItems: "center" }}>
+          <InputFieldDateText
+            placeholder="Дата"
+            keyboardType="numeric"
+            onChangeText={setDate}
+            value={date}
+          ></InputFieldDateText>
+          <InputFieldDateButton onPress={() => setShowPicker(true)}>
+            <Text style={{ color: "white" }}>Выбрать дату</Text>
+          </InputFieldDateButton>
+        </View>
+        <View style={{ flexDirection: "row", gap: 10, justifyContent: "center", alignItems: "center" }}>
+          <InputFieldDateText
+            placeholder="Время"
+            keyboardType="numeric"
+            onChangeText={setTime}
+            value={time}
+          ></InputFieldDateText>
+          <InputFieldDateButton onPress={() => setShowPickerTime(true)}>
+            <Text style={{ color: "white" }}>Выберите время</Text>
+          </InputFieldDateButton>
+        </View>
         <TouchableOpacity>
           <InputButton>
             <InputButtonText onPress={handleAddAppointment}>Выставить назначения</InputButtonText>
           </InputButton>
         </TouchableOpacity>
+        {showPicker && <DateTimePicker mode={"date"} value={date || new Date()} onChange={handleChangeDate} />}
+        {showPickerTime && (
+          <DateTimePicker mode={"time"} value={date || new Date()} is24Hour={true} onChange={handleChangeTime} />
+        )}
       </>
     );
   } else {
