@@ -4,7 +4,6 @@ import getAvatarColor from "../utils/getAvatarColor";
 import { SwipeListView } from "react-native-swipe-list-view";
 import axios from "../axios";
 import { Ionicons } from "@expo/vector-icons";
-import ModalWindow from "./ModalWindow";
 import { useState } from "react";
 
 const Group = styled.View`
@@ -97,13 +96,11 @@ const HidenUpdateText = styled.Text`
   font-size: 12px;
 `;
 export const GroupClient = ({ title, items, navigation, fetchApi }) => {
-  const [visibilityForModal, setVisibilityForModal] = useState(false);
-  const [itemsForModal, setItemsForModal] = useState({});
   const delAppointment = async (id) => {
     try {
       const data = await axios.delete(`/appointments/${id}`);
       if (data) {
-        Alert.alert("Ghbdtn", data.data.message, [{ text: "Ask me latter" }, { text: "eefefef" }]);
+        Alert.alert("Удаление приема", data.data.message, [{ text: "Отлично" }]);
       }
       fetchApi();
     } catch (error) {
@@ -139,18 +136,13 @@ export const GroupClient = ({ title, items, navigation, fetchApi }) => {
                 <FullName>{data.item.fullname}</FullName>
                 <GreyText>{data.item.diagnosis}</GreyText>
               </View>
-              <GroupDate active={title}>{data.item.time}</GroupDate>
+              <GroupDate active={items[0] === data.item ? true : false}>{data.item.time}</GroupDate>
             </GroupItem>
           </>
         )}
         renderHiddenItem={(data, rowMap) => (
           <Hiden>
-            <HidenUpdate
-              onPress={() => {
-                setItemsForModal(data.item);
-                setVisibilityForModal(true);
-              }}
-            >
+            <HidenUpdate onPress={() => navigation.navigate("PatchAppointmentScreen", { item: data.item })}>
               <Ionicons color="white" size={25} name="create"></Ionicons>
             </HidenUpdate>
             <HidenDel
@@ -164,13 +156,6 @@ export const GroupClient = ({ title, items, navigation, fetchApi }) => {
         )}
         rightOpenValue={-120}
       ></SwipeListView>
-      <Modal visible={visibilityForModal}>
-        <ModalWindow
-          fetchApi={fetchApi}
-          setVisibilityForModal={setVisibilityForModal}
-          items={itemsForModal}
-        ></ModalWindow>
-      </Modal>
     </Group>
   );
 };

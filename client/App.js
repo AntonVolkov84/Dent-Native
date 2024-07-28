@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "./screens/HomeScreen";
 import PatientCardScreen from "./screens/PatientCardScreen";
 import AddPatientsScreen from "./screens/AddPatientsScreen";
+import PatchAppointmentScreen from "./screens/PatchAppointmentScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -51,6 +52,20 @@ export default function App() {
             },
           }}
           component={AddPatientsScreen}
+        />
+        <Stack.Screen
+          name="PatchAppointmentScreen"
+          options={{
+            title: "Изменение приема",
+            headerStyle: {
+              backgroundColor: "#1f1838",
+            },
+            headerTintColor: "#fff",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+          }}
+          component={PatchAppointmentScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>
