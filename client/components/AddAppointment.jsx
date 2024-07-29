@@ -1,7 +1,7 @@
 import { StyleSheet, Alert, Button, TextInput, View, Text, TouchableOpacity } from "react-native";
 import styled from "styled-components";
 import axios from "../axios";
-import { useState } from "react";
+import React, { useState } from "react";
 import SelectDropdown from "react-native-select-dropdown";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -70,7 +70,7 @@ const LoadText = styled.Text`
   font-size: 25px;
 `;
 
-export default function AddAppointment(props) {
+export default React.memo(function AddAppointment(props) {
   const [dentNumber, setDentNumber] = useState("");
   const [diagnosis, setDiagnosis] = useState("");
   const [price, setPrice] = useState("");
@@ -204,7 +204,7 @@ export default function AddAppointment(props) {
       </Load>
     );
   }
-}
+});
 const styles = StyleSheet.create({
   dropdownButtonStyle: {
     width: 330,

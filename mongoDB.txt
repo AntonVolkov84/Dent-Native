@@ -3,3 +3,5 @@ password: 9iHyhruCp9NtfuvH,
 mongodb+srv://antvolkov84:9iHyhruCp9NtfuvH@cluster0.2jyu76d.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 https://cloud.mongodb.com/v2/6694f8b5c133444deee31cd8#/security/network/accessList
 https://account.mongodb.com/account/login
+npm install --global eas-cli
+eas init --id b3d394db-b440-4e6e-a128-bfa71eaa6ed8

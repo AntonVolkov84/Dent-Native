@@ -1,7 +1,7 @@
 import { StyleSheet, SafeAreaView, Alert, Modal, View, Text, TouchableOpacity } from "react-native";
 import styled from "styled-components";
 import axios from "../axios";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import SelectDropdown from "react-native-select-dropdown";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -93,7 +93,7 @@ const InputFieldDateButton = styled.TouchableOpacity`
   align-items: center;
 `;
 
-function PatchAppointmentScreen({ route, navigation }) {
+export default React.memo(function PatchAppointmentScreen({ route, navigation }) {
   const { item } = route.params;
   const [dentNumber, setDentNumber] = useState("");
   const [diagnosis, setDiagnosis] = useState("");
@@ -249,7 +249,7 @@ function PatchAppointmentScreen({ route, navigation }) {
       </InputAllButon>
     </Container>
   );
-}
+});
 const styles = StyleSheet.create({
   dropdownButtonStyle: {
     width: 330,
@@ -297,5 +297,3 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
 });
-
-export default PatchAppointmentScreen;

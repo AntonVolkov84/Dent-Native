@@ -40,7 +40,7 @@ const InputButtonText = styled.Text`
   color: white;
 `;
 
-export default function AddPatientsScreen({ navigation }) {
+export default React.memo(function AddPatientsScreen({ navigation }) {
   const [name, setName] = useState("");
   const [number, onChangeNumber] = useState("");
   const [patients, setPatients] = useState(null);
@@ -101,4 +101,4 @@ export default function AddPatientsScreen({ navigation }) {
       <AddAppointment patients={patients} isLoading={isLoading} navigation={navigation} />
     </Container>
   );
-}
+});

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components/native";
-import { FlatList, Text, View, Alert, TouchableHighlight } from "react-native";
-import { GroupClient } from "../components/GroupClient";
+import { FlatList, Text, View, Alert, TouchableHighlight, Image } from "react-native";
+import GroupClient from "../components/GroupClient";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { StatusBar } from "expo-status-bar";
 import axios from "../axios";
@@ -10,6 +10,11 @@ const Container = styled.View`
   width: 100%;
   height: 100%;
   background-color: #1f1838;
+`;
+const ContainerImage = styled.Image`
+  width: 420px;
+  height: 900px;
+  object-fit: cover;
 `;
 const PlusButton = styled.TouchableOpacity`
   width: 80px;
@@ -23,9 +28,14 @@ const PlusButton = styled.TouchableOpacity`
   bottom: 80px;
 `;
 
-export default function HomeScreen({ navigation }) {
+export default React.memo(function HomeScreen({ navigation }) {
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [banner, setBanner] = useState(true);
+
+  setInterval(() => {
+    setBanner(false);
+  }, 5000);
 
   const fetchApi = async () => {
     try {
@@ -43,38 +53,43 @@ export default function HomeScreen({ navigation }) {
   }, []);
   return (
     <Container>
-      <FlatList
-        data={data}
-        onRefresh={fetchApi}
-        refreshing={isLoading}
-        key={(item) => item.index}
-        renderItem={({ item }) => (
-          <GroupClient
-            key={Date.parse(new Date())}
-            navigation={navigation}
-            items={item.Appointments}
-            title={item._id.data}
-            fetchApi={fetchApi}
-          />
-        )}
-      ></FlatList>
-      <PlusButton
-        onPress={() => navigation.navigate("AddPatientsScreen")}
-        style={{
-          shadowColor: "grey",
-          shadowOffset: {
-            width: 4,
-            height: 4,
-          },
-          shadowOpacity: 0.7,
-          shadowRadius: 5,
+      {banner ? (
+        <ContainerImage source={require("../assets/image.jpg")} />
+      ) : (
+        <>
+          <FlatList
+            data={data}
+            onRefresh={fetchApi}
+            refreshing={isLoading}
+            key={(item) => item.index}
+            renderItem={({ item }) => (
+              <GroupClient
+                key={Date.parse(new Date())}
+                navigation={navigation}
+                items={item.Appointments}
+                title={item._id.data}
+                fetchApi={fetchApi}
+              />
+            )}
+          ></FlatList>
+          <PlusButton
+            onPress={() => navigation.navigate("AddPatientsScreen")}
+            style={{
+              shadowColor: "grey",
+              shadowOffset: {
+                width: 4,
+                height: 4,
+              },
+              shadowOpacity: 0.7,
+              shadowRadius: 5,
 
-          elevation: 5,
-        }}
-      >
-        <AntDesign name="plus" size={40} color="white" />
-      </PlusButton>
-      <StatusBar />
+              elevation: 5,
+            }}
+          >
+            <AntDesign name="plus" size={40} color="white" />
+          </PlusButton>
+        </>
+      )}
     </Container>
   );
-}
+});

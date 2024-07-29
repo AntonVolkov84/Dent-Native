@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, FlatList } from "react-native";
+import { View, Text, TouchableOpacity, FlatList, Linking } from "react-native";
 import styled from "styled-components";
 import Entypo from "@expo/vector-icons/Entypo";
 import PatientProgramm from "../components/PatientProgramm";
@@ -74,7 +74,7 @@ const LoadText = styled.Text`
   font-size: 25px;
 `;
 
-export default function PatientCardScreen({ route }) {
+export default React.memo(function PatientCardScreen({ route }) {
   const { item } = route.params;
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -95,13 +95,12 @@ export default function PatientCardScreen({ route }) {
   }, []);
   return (
     <Container>
-      <PatientFullName>{item.fullname}</PatientFullName>
-      <GreyText>{item.phone}</GreyText>
       <PatientButton>
-        <Button>
-          <ButtonText>Позвонить</ButtonText>
-        </Button>
-        <ButtonPhone>
+        <View>
+          <PatientFullName>{item.fullname}</PatientFullName>
+          <GreyText>{item.phone}</GreyText>
+        </View>
+        <ButtonPhone onPress={() => Linking.openURL("tel:" + item.phone)}>
           <Entypo name="phone" size={35} color="white" />
         </ButtonPhone>
       </PatientButton>
@@ -118,4 +117,4 @@ export default function PatientCardScreen({ route }) {
       )}
     </Container>
   );
-}
+});

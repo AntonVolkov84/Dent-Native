@@ -4,7 +4,7 @@ import getAvatarColor from "../utils/getAvatarColor";
 import { SwipeListView } from "react-native-swipe-list-view";
 import axios from "../axios";
 import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
+import React, { useState } from "react";
 
 const Group = styled.View`
   padding: 0 40px;
@@ -95,7 +95,7 @@ const HidenUpdateText = styled.Text`
   color: white;
   font-size: 12px;
 `;
-export const GroupClient = ({ title, items, navigation, fetchApi }) => {
+export default React.memo(function GroupClient({ title, items, navigation, fetchApi }) {
   const delAppointment = async (id) => {
     try {
       const data = await axios.delete(`/appointments/${id}`);
@@ -158,4 +158,4 @@ export const GroupClient = ({ title, items, navigation, fetchApi }) => {
       ></SwipeListView>
     </Group>
   );
-};
+});

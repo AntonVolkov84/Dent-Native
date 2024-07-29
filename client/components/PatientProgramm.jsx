@@ -30,7 +30,6 @@ const GroupIcon = styled.View`
 const GroupIconButton = styled.View`
   display: flex;
   flex-direction: row;
-  padding-left: 25px;
   padding-top: 15px;
 `;
 const GroupIconText = styled.Text`
@@ -39,7 +38,7 @@ const GroupIconText = styled.Text`
   font-size: 20px;
 `;
 const GroupIconTime = styled.View`
-  width: 150px;
+  width: 190px;
   height: 50px;
   background-color: #2a86ff;
   border-radius: 18px;
@@ -47,7 +46,8 @@ const GroupIconTime = styled.View`
   align-items: center;
 `;
 const GroupIconPrice = styled.View`
-  margin-left: 25px;
+  margin-right: 10px;
+  margin-left: 10px;
   width: 80px;
   height: 50px;
   background-color: #84d269;
@@ -80,7 +80,7 @@ export default function PatientProgramm({ item }) {
         <GroupIcon>
           <GroupIconButton>
             <GroupIconTime>
-              <GroupIconTimeText>{item.date + " " + item.time}</GroupIconTimeText>
+              <GroupIconTimeText>{new Date(item.date).toLocaleDateString("en-GB") + " " + item.time}</GroupIconTimeText>
             </GroupIconTime>
             <GroupIconPrice>
               <GroupIconPriceText>{item.price}</GroupIconPriceText>

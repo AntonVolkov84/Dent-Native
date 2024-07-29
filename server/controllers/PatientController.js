@@ -10,7 +10,7 @@ export const addPatient = async (req, res) => {
     }
     const doc = new PatientModel({
       fullname: req.body.fullname,
-      phone: req.body.phone,
+      phone: "+38" + req.body.phone,
     });
     const patient = await doc.save();
     res.json({ message: `Пациент ${patient.fullname} добавлен`, patient });
@@ -23,7 +23,7 @@ export const addPatient = async (req, res) => {
 };
 export const allPatient = async (req, res) => {
   try {
-    const patient = await PatientModel.find();
+    const patient = await PatientModel.aggregate([{ $sort: { fullname: 1 } }]);
     res.json(patient);
   } catch (error) {
     console.log(error);
